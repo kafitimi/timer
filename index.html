@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Секундомер</title>
+<link rel="icon" href="logo.png">
+<style>
+	body{font-family:sans-serif; color:silver;}
+	#display {display:inline-block;}
+	#timer {font-size:220px; width:565px; color:gray;}
+	#sec {padding-left:12px;}
+	#buttons {text-align:center;}
+	button {padding:6px 30px; border-radius:30px; width:150px;}
+	button:focus {outline:0;}
+	button#restart {visibility: hidden}
+	#logo {display:inline-block; text-align:center; margin-right: 20px; vertical-align: top;}
+	img {width:80px; margin-top:40px;}
+</style>
+</head>
+<body>
+	<div id="display">
+		<div id="timer">
+			<span id="min">00</span>:<span id="sec">00</span>
+		</div>
+		<div id="buttons">
+			<button id="startpause" onclick="run();">Пуск</button>
+			<button id="restart" onclick="restart();">Перезапуск</button>		
+		</div>
+	</div>
+	<div id="logo">
+		<img src="logo.png"><br>
+		Предзащита <br>
+		Кафедра ИТ
+	</div>
+	<script>
+		let t = 0,
+		    clock = {},
+		    timer;
+		let [display, startpause, btnrestart] = ["display", "startpause", "restart"].map(document.getElementById.bind(document));
+		function toggle(func){
+			startpause.onclick = func;
+			startpause.innerHTML = (func == pause) ? "Пауза" : "Продолжить";
+			btnrestart.style.visibility = (func == pause) ? "hidden" : "visible";
+		}
+		function run() {
+			timer = setInterval(function () {
+				t++;
+				display.style.color = (t > 420) ? "#cc7b7c" : "gray";
+				clock.sec = parseInt(t % 60, 10);
+				clock.min = parseInt((t - clock.sec) / 60, 10);
+				["min","sec"].map(arg => 
+					document.getElementById(arg).innerHTML = 
+					clock[arg].toString().padStart(2, "0"));
+			}, 1000);
+			toggle(pause);
+		}
+		function pause() {
+			clearInterval(timer);
+			toggle(run);
+		}
+		function restart(){
+			t = 0;
+			["min","sec"].map(arg => document.getElementById(arg).innerHTML = "00")
+			run();
+		}
+	</script>
+</body>
+</html>
